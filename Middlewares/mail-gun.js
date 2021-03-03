@@ -9,14 +9,14 @@ const { compareSync } = require('bcrypt');
 
 
 
-module.exports.sendMail = function (token, email) {
+module.exports.sendMail = function (token, email, URL) {
 
     
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
             user: 'tusharkhandejod01@gmail.com',
-            pass: 'Manju@8605'
+            pass: process.env.myEmailPass
         }
     });
 
@@ -26,8 +26,8 @@ module.exports.sendMail = function (token, email) {
         to: email,
         subject: 'Reset Password link',
         html: `
-               <h2>Please click on the given link for resetting the password</h2>
-               <p><a>http://localhost:5000/api/resetPassword/${token}</a></p>`
+               <h1>Please click on the given link for resetting the password</h1>
+               <p><a>${URL}</a></p>`
     };
 
     transporter.sendMail(mailOptions, function (error, success) {
@@ -37,39 +37,5 @@ module.exports.sendMail = function (token, email) {
             console.log('Email send from nodemailer file')
         }
     })
-
-
-
-
-
-
-
-
-
-
-
-
-    //    console.log('We are inside send mail function')
-    //    var token = forgetPasswordToken;
-    //    console.log("Token in the mailgun file : ",token)
-
-    //    console.log('email in mail-js file : ',email)
-
-    //     const data = {
-    //         from: 'noreply@hello.com',
-    //         to: email,
-    //         subject: 'Email account activation link',
-    //         html: `
-    //                <h2>Please click on the given link for resetting the password</h2>
-    //                <p><a>http://localhost:5000/api/resetPassword/${token}</a></p>`
-    //     };
-
-    //     mg.messages().send(data).then(success=>{
-    //         console.log('Reset password link is send')
-
-    //     }).catch(err=>{
-    //         console.log(err)
-    //     })
-
 
 }

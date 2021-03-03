@@ -84,14 +84,11 @@ class EmpModel {
                     }
                     
                     bcryptCheck.VerifyPassword(loginData.password, user.password).then(data => {
-                        console.log('passCompareResult : ',data)
-
-                        console.log('Payload : ', payload)
                         if (data === true) {
                             console.log('Login Successfull')
                             let loginToken = jwtToken.generateToken(payload);
                             console.log('Login Token : ', loginToken)
-                            return callback(null,{ message: "Login Successfull", "token": loginToken })
+                            return callback({ "message": "Login Successfull", "token": loginToken })
                         }else {
                             console.log('Login failed')
                             return callback("Password did not matched")
@@ -115,66 +112,63 @@ class EmpModel {
     forgetPassword = (req) => {
         
 
+     return new Promise((resolve,reject)=>{
         User.findOne({'email': req.body.email}).then(user=>{
-            console.log('Record check : ',user)
+           
             if(!user){
                 console.log('User not found')
-                return ({ message: "User not found" })
+                reject ({err:"user not found", success: false });
             }else if(user){
-               console.log('Record found : ',user)
+              
                let payload = {
                 "email": user.email,
                 "id": user._id
                }
                let forgetPasswordToken = jwtToken.generateToken(payload)
-               console.log('Forget password token : ', forgetPasswordToken)
-
-               return User.updateOne({ resetLink: forgetPasswordToken.token }).then(success=>{
-                console.log(success)
-                sendMail(forgetPasswordToken.token, user.email);
-                return ({ message: "Reset password link is send on your Email kindly check", data: success })
-
-               }).catch(err=>{
-                   return ({ error: "Reset password link error", data:err })
+               var URL = `${process.env.baseURL}/resetPassword/${forgetPasswordToken.token}`;
+               
+                return User.updateOne({ resetLink: forgetPasswordToken.token }).then(success=>{
+                   sendMail(forgetPasswordToken.token, user.email, URL);
+                   resolve(user)
+                   
+                }).catch(err=>{
+                    console.log(err)
+                    reject ({err:"Token not mached", success: false });
+                    
                })
             }
         }).catch(err=>{
             console.log(err)
+            reject(err)
+            return err;
         })
+     })
+        
        
        
-        // User.findOne({ email }, (err, user) => {
-        //     if (err || !user) {
-        //         return error = "User does not exists"
-        //     }
-
-        //     let payload2 = {
-        //         "email": user.email
-        //     }
-
-        //     let forgetPasswordToken = jwtToken.generateToken(payload2);
-        //     console.log("forget password token : ", forgetPasswordToken.token)
-
-
-        //     return user.updateOne({ resetLink: forgetPasswordToken.token }, function (err, success) {
-        //         if (err) {
-        //             return error = "Reset password link error";
-        //         } else {
-        //             sendMail(forgetPasswordToken.token, user.email);
-        //         }
-        //     })
-        // })
+       
     }
 
-    resetPassword = (req, res) => {
-        const { resetLink, newPass } = req.body;
-        console.log('reset link : ', resetLink)
-        console.log('new Password : ', newPass)
-
-        if (resetLink) {
-
-            let checkTokenVerifyResult = jwtToken.TokenVerification(resetLink);
-        }
+    resetPassword = (req, resetid,encryptedNewPassword) => {
+        
+        console.log('We are inside the model reset password')
+        console.log('req body : ',req.body)
+        console.log('resetid : ',resetid)
+        console.log('encryptedNewPassword : ',encryptedNewPassword)
+       
+        return new Promise((resolve,reject)=>{
+            User.findByIdAndUpdate(resetid, {password: encryptedNewPassword }, function(err, data){
+                if(err){
+                   console.log("user not found or password is not updated")
+                   reject(err)
+                }else if(data){
+                    console.log("Passord is changed")
+                    resolve(data)
+                }
+            })
+        })
+        
+    
     }
 }
 

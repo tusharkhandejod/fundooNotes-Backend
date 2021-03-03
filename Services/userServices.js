@@ -1,5 +1,6 @@
 const User = require('../Model/userModel');
-
+const jwt_decode = require('jwt-decode')
+const bcryptCheck = require('../Middlewares/bcryptfile');
 
 class EmpServices {
 
@@ -36,36 +37,46 @@ class EmpServices {
        return callback(err)
     }
 
-
-
-    //  let serviceResult = User.login(req)
-    //  console.log("Servicse Result :",serviceResult)
-    //  return serviceResult;
-    // return User.login(req)
-    // .then((result)=>{
-    //     return ({ message: "Login successfull", data: result  })
-    // }).catch((error)=>{
-    //     return ({ message: "Login failed", data: error })
-    // })
-  }
+ }
 
   forgetPassword = (req, res) => {
 
-    
-    User.forgetPassword(req)
-    // return User.forgetPassword(req).then((res) => {
-    //   return ({ message: "Check your mail for reset password link", data: result })
-    // }).catch((error) => {
-    //   return ({ message: "Error occured...", data: error })
-    //})
+    return User.forgetPassword(req)
+    .then(res=>{
+      console.log('Data received in services from model : ',res)
+      return ({ message: "Reset password link is send on your Email kindly check", data: res })
+    }).catch(error=>{
+      console.log('Data received in services from model : ',res)
+      return ({ error: "Reset password link error", data: error })
+    })
+   
   }
 
   resetPassword = (req, res) => {
-    return User.resetPassword(req).then((res) => {
-      return ({ message: "Your password is changed", data: res })
-    }).catch((error) => {
-      return ({ message: "Error occured", data: error })
-    })
+  
+    var token = req.header('token')
+    console.log('token : ',token)
+    var decodedData = jwt_decode(token)
+    console.log('decodedData :',decodedData)
+    var {newPass} = req.body
+    let encryptedNewPassword = bcryptCheck.encodePassword(newPass)
+    console.log('encryptedNewPassword :',encryptedNewPassword)
+    console.log('decodedData id :',decodedData.id)
+    
+     User.resetPassword(req,decodedData.id,encryptedNewPassword)
+     .then(result=>{
+       return({ message: "Password is changed", data: result })
+     }).catch(err=>{
+      return({ message: "Error Password is not changed", data: err })
+     })
+
+    
+  //   return User.resetPassword(req).then((res) => {
+  //     return ({ message: "Your password is changed", data: res })
+  //   }).catch((error) => {
+  //     return ({ message: "Error occured", data: error })
+  //   })
+
   }
 
 }

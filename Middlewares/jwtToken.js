@@ -13,6 +13,18 @@ module.exports.generateToken = function (payload) {
     }
 }
 
-module.exports.TokenVerification = function (req) {
-   
+module.exports.verifyToken = function (resetLink) {
+    return new Promise((resolve,reject)=>{
+        jwt.verify(resetLink, process.env.secretKey, function(err, decodeData){
+            if(err){
+                console.log('Incorrect token or token expired')
+                reject(err);
+            }else if(decodeData){
+                resolve(decodeData ? true : false);
+            }
+    
+    
+        })
+    })
+    
 }

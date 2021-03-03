@@ -6,9 +6,10 @@ const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
+const logger = require('./Logger/logger')
 
 
-let port = 5000;
+let port = process.env.port;
 console.log("Server js is running")
 
 
@@ -17,6 +18,8 @@ app.use(express.json());
 app.use('/api', AuthRoute);
 app.listen(port, () => {
     console.log(`Server is starting at port : ${port}`)
+    logger.info(`Server is starting at port : ${port}`)
+    
 })
 
 
