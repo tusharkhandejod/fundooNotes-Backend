@@ -1,5 +1,6 @@
 const express = require('express');
 const dbConfig3 = require('./Config/config');
+const dbConfig4 = require('./Config/config');
 const AuthRoute = require('./Routes/userRoutes');
 const mongoose = require('mongoose');
 const app = express();
@@ -23,13 +24,26 @@ app.listen(port, () => {
 })
 
 
-mongoose.connect(dbConfig3.url, {
+// mongoose.connect(dbConfig3.url, {
+//     useNewUrlParser: true,
+//     useCreateIndex: true,
+//     useUnifiedTopology: true
+// }).then(() => {
+//     console.log("Database connected successfully");
+// }).catch(err => {
+//     console.log("error", err);
+//     process.exit();
+// });
+
+
+
+mongoose.connect(dbConfig4.Notes_url,{
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
-}).then(() => {
-    console.log("Database connected successfully");
-}).catch(err => {
+}).then(()=>{
+    console.log("Notes Database connected successfully");
+}).catch(err=>{
     console.log("error", err);
     process.exit();
-});
+})

@@ -13,18 +13,29 @@ module.exports.generateToken = function (payload) {
     }
 }
 
-module.exports.verifyToken = function (resetLink) {
-    return new Promise((resolve,reject)=>{
-        jwt.verify(resetLink, process.env.secretKey, function(err, decodeData){
+module.exports.verifyToken = function (req,res, next) {
+    
+        var token = req.header('token') || req.params.token;
+        console.log('token : ',token)
+        
+        let verification_msg = {
+           "message": "Unauthorized user"
+        }
+        
+        jwt.verify(token, process.env.secretKey, function(err, decodeData){
             if(err){
                 console.log('Incorrect token or token expired')
-                reject(err);
+                return res.status(401).send(verification_msg);
             }else if(decodeData){
-                resolve(decodeData ? true : false);
+                req.decoded = decodeData;
+                console.log('decoded data : ',req.decoded);
+                console.log('Token matched')
+                next();
+
             }
     
     
         })
-    })
+   
     
 }

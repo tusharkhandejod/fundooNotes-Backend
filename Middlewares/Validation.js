@@ -61,5 +61,26 @@ exports.Validator = {
             .isEmail()
             .withMessage('PLease provide valid Email ID')
     ],
+    
+    updateNotes: [
+        check('title')
+             .trim()
+             .not()
+             .isEmpty()
+             .withMessage('title should not be empty'),
+        check('description')
+             .trim()
+             .not()
+             .isEmpty()
+             .withMessage('description should not be empty')
+    ],
+
+    moveToTrash: [
+        check('moveToTrashNote_ID')
+              .trim()
+              .not()
+              .isEmpty()
+              .withMessage('moveToTrashNote_ID should not be empty')
+    ]
 
 } 

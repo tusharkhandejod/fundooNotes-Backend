@@ -52,39 +52,29 @@ class EmpServices {
    
   }
 
-  resetPassword = (req, res) => {
-  
-    var token = req.header('token')
-    console.log('token : ',token)
-    var decodedData = jwt_decode(token)
-    console.log('decodedData :',decodedData)
-    var {newPass} = req.body
-    let encryptedNewPassword = bcryptCheck.encodePassword(newPass)
-    console.log('encryptedNewPassword :',encryptedNewPassword)
-    console.log('decodedData id :',decodedData.id)
+  resetPassword = (resetPasswordData, callback) => {
+     
     
-     User.resetPassword(req,decodedData.id,encryptedNewPassword)
-     .then(result=>{
-       return({ message: "Password is changed", data: result })
-     }).catch(err=>{
-      return({ message: "Error Password is not changed", data: err })
-     })
+    let encodedNewPass = bcryptCheck.encodePassword(resetPasswordData.password);
+    
+    let finalresetPassObj = {
+      id: resetPasswordData.id,
+      email: resetPasswordData.email,
+      password: encodedNewPass
+    }
 
-    
-  //   return User.resetPassword(req).then((res) => {
-  //     return ({ message: "Your password is changed", data: res })
-  //   }).catch((error) => {
-  //     return ({ message: "Error occured", data: error })
-  //   })
+    return User.resetPassword(finalresetPassObj, (err, data)=>{
+      if(err){
+        return callback(err)
+      }else{
+        return callback(null, data)
+      }
+
+    })
 
   }
 
 }
-
-
-
-
-
 
 
 module.exports = new EmpServices();

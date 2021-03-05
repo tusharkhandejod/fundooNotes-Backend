@@ -2,6 +2,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const { callbackPromise } = require('nodemailer/lib/shared');
 const bcryptCheck = require('../Middlewares/bcryptfile');
 const jwtToken = require('../Middlewares/jwtToken');
 const { sendMail } = require('../Middlewares/mail-gun');
@@ -149,31 +150,23 @@ class EmpModel {
        
     }
 
-    resetPassword = (req, resetid,encryptedNewPassword) => {
+    resetPassword = (resetPasswordData, callback) => {
         
-        console.log('We are inside the model reset password')
-        console.log('req body : ',req.body)
-        console.log('resetid : ',resetid)
-        console.log('encryptedNewPassword : ',encryptedNewPassword)
-       
-        return new Promise((resolve,reject)=>{
-            User.findByIdAndUpdate(resetid, {password: encryptedNewPassword }, function(err, data){
-                if(err){
-                   console.log("user not found or password is not updated")
-                   reject(err)
-                }else if(data){
-                    console.log("Passord is changed")
-                    resolve(data)
-                }
-            })
+        return User.findByIdAndUpdate(resetPasswordData.id,resetPasswordData, (err, success)=>{
+            if(err){
+                console.log(err)
+                console.log('Error Password not changed')
+                return callback(err)
+            }else if(success){
+                console.log('Your password has been changed')
+                return callback({ "message": "Your password has been changed" })
+            }else {
+                return callback({ "message": "Error Password not changed" })
+            }
         })
         
-    
     }
 }
-
-
-
 
 
 module.exports = new EmpModel();
