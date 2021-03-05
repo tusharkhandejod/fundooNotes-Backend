@@ -79,6 +79,30 @@ class NotesServices {
        })
 
     }
+
+    moveToArchiveServices = (obj, callback) => {
+
+        noteModel.moveToArchiveModel(obj, (err, data)=>{
+            if(err){
+                return callback(err)
+            }else if(data){
+                return callback(null,data)
+            }
+        })
+    }
+
+
+    getAllArchivedNotesServices =(obj, callback) => {
+        
+        noteModel.getAllArchivedNotesModel(obj, (data, err)=>{
+             if(data){
+                return callback({ 'messaage': "We got all the trash notes", 'success': true, data: data })
+             }else if(err){
+                 return callback({ 'message': "Error failed to get all trash files", 'success': false, err: err })
+             }
+        })
+ 
+     }
 }
 
 module.exports = new NotesServices();

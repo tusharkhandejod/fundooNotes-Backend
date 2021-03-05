@@ -137,7 +137,7 @@ class NotesModel {
                             callback({ 'message': "Error failed to move to the trash", 'success': false })
                         }else if(success){
                             console.log('Moved to the trash')
-                            callback({ 'message': "Successfull", 'success': true })
+                            callback({ 'message': "Successfull in moving to the trash", 'success': true })
                         }
                     })
                 }
@@ -149,13 +149,61 @@ class NotesModel {
 
     getAllTrashNotesModel = (obj, callback) => {
 
-        console.log('obj in model : ',obj)
+        
         Notes.find(obj, (err, data)=>{
             if(err){
                 console.log(err)
                 callback(err)
             }else if(data){
                 console.log('All notes in the trash are : ',data)
+                callback(data)
+            }
+        })
+
+
+    }
+
+    moveToArchiveModel = (obj, callback) => {
+     
+        Notes.findById(obj.moveToArchiveNote_ID, function(err, data){
+            if(err){
+                console.log('Note on that ID not found')
+                callback({ 'message': "Note on that ID not found", 'success': false })
+            }else if(data){
+                console.log('Note found : ',data)
+                console.log('isArchive : ',data.isArchive)
+                if(data.isArchive == true || data.isArchive == false){
+                    let updatedObj = {
+                        isArchive: !data.isArchive
+                    }
+
+                    Notes.findByIdAndUpdate(obj.moveToArchiveNote_ID, updatedObj, (err, success)=>{
+                        if(err){
+                            console.log('Error failed to move to the Archived')
+                            callback({ 'message': "Error failed to move to the Archived", 'success': false })
+                        }else if(success){
+                            console.log('Moved to the Archived')
+                            callback({ 'message': "Successfull in moving to the Archived", 'success': true })
+                        }
+                    })
+                }
+                
+            }
+        })
+
+
+    }
+
+
+    getAllArchivedNotesModel = (obj, callback) => {
+
+        
+        Notes.find(obj, (err, data)=>{
+            if(err){
+                console.log(err)
+                callback(err)
+            }else if(data){
+                console.log('All notes in the Archived are : ',data)
                 callback(data)
             }
         })

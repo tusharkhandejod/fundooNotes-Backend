@@ -1,2 +1,5 @@
 {"level":"error","message":"inside the controller login data","timestamp":"2021-03-03T03:40:12.124Z"}
 {"level":"error","message":"inside the controller login data","timestamp":"2021-03-03T03:41:09.667Z"}
+{"level":"error","message":"inside the controller login data","timestamp":"2021-03-05T16:07:58.059Z"}
+{"level":"error","message":"inside the controller login data","timestamp":"2021-03-05T16:08:02.418Z"}
+{"message":"inside the controller login data Login Successfull","token":{"message":"Token generated successfully","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Inl1dnJhanNpbmdoQGdtYWlsLmNvbSIsImlkIjoiNjA0MjU3MGUwNGRlNTA1YzBjNmFhMWI4IiwiaWF0IjoxNjE0OTYwNTEzLCJleHAiOjE2MTUwNDY5MTN9.8g_fUP1HK7vlGKRpbOJdhRLkRbdUDpnVDeomQGnsbGU"},"level":"error","timestamp":"2021-03-05T16:08:33.296Z"}

@@ -123,7 +123,7 @@ const moveToTrashController = (req, res, next) => {
 }
 
 const getAllTrashNotesController = (req, res, next) => {
-    console.log('req decoded : ',req.decoded)
+    
 
     let obj = {
         isTrash: true
@@ -145,11 +145,58 @@ const getAllTrashNotesController = (req, res, next) => {
 
 }
 
+const moveToArchiveController = (req,res) => {
+    
+
+    let obj = {
+        moveToArchiveNote_ID: req.body.moveToArchiveNote_ID
+    }
+
+    noteServices.moveToArchiveServices(obj, (data, err)=>{
+        if(data){
+            response.success = data.success;
+            response.message = data.message;
+            return res.status(200).send(response);
+        }else if(err){
+            response.success = err.success;
+            response.message = err.message;
+            return res.status(400).send(response);
+        }
+    })
+}
+
+
+const getAllArchivedNotesController = (req, res, next) => {
+    
+
+    let obj = {
+        isArchive: true
+    }
+
+    noteServices.getAllArchivedNotesServices(obj, (data, err)=>{
+        if(data){
+            response.success = data.success;
+            response.message = data.message;
+            response.data = data.data;
+            return res.status(200).send(response);
+        }else if(err){
+            response.success = err.success;
+            response.message = err.message;
+            response.data = err.data;
+            return res.status(200).send(response);
+        }
+    })
+
+}
+
+
 module.exports = {
     addNoteController, 
     deleteNoteController, 
     getAllNotesController, 
     updateNotesController,
     moveToTrashController,
-    getAllTrashNotesController
+    getAllTrashNotesController,
+    moveToArchiveController,
+    getAllArchivedNotesController
 }
